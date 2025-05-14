@@ -27,6 +27,12 @@ class _MainAppState extends State<MainApp> {
     });
   }
 
+  removeLast() {
+    setState(() {
+      label = label.substring(0, label.length - 1);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -82,39 +88,39 @@ class _MainAppState extends State<MainApp> {
   StaggeredGrid aCalculator() {
     return StaggeredGrid.count(
       crossAxisCount: 5,
-      mainAxisSpacing: 2,
-      crossAxisSpacing: 2,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
       children: [
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Text('sh'),
+            child: Text('sh'),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Text('alp'),
+            child: Text('alp'),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Icon(Icons.keyboard_arrow_up),
+            child: Icon(Icons.keyboard_arrow_up),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 2,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Text('Menu'),
+            child: Text('DEG/RAD'),
           ),
         ),
         StaggeredGridTile.count(
@@ -122,28 +128,28 @@ class _MainAppState extends State<MainApp> {
           mainAxisCellCount: 1,
           child: Container(),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Icon(Icons.keyboard_arrow_left),
+            child: Icon(Icons.keyboard_arrow_left),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Icon(Icons.keyboard_arrow_down),
+            child: Icon(Icons.keyboard_arrow_down),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Icon(Icons.keyboard_arrow_right),
+            child: Icon(Icons.keyboard_arrow_right),
           ),
         ),
         StaggeredGridTile.count(
@@ -159,12 +165,12 @@ class _MainAppState extends State<MainApp> {
             child: const Text('^'),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Text('1/x'),
+            child: Text('1/x'),
           ),
         ),
         StaggeredGridTile.count(
@@ -191,20 +197,20 @@ class _MainAppState extends State<MainApp> {
             child: const Text('ln'),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Text('+/-'),
+            child: Text('+/-'),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Text('hyp'),
+            child: Text('hyp'),
           ),
         ),
         StaggeredGridTile.count(
@@ -278,7 +284,7 @@ class _MainAppState extends State<MainApp> {
   StaggeredGrid normalCalculator() {
     return StaggeredGrid.count(
       crossAxisCount: 5,
-      mainAxisSpacing: 5,
+      mainAxisSpacing: 4,
       crossAxisSpacing: 4,
 
       children: [
@@ -310,16 +316,16 @@ class _MainAppState extends State<MainApp> {
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
-            onPressed: null,
-            child: const Text('DEL'),
+            onPressed: () => clearLabel(),
+            child: const Text('CE'),
           ),
         ),
         StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
-            onPressed: () => clearLabel(),
-            child: const Text('AC'),
+            onPressed: () => removeLast(),
+            child: const Icon(Icons.backspace),
           ),
         ),
         StaggeredGridTile.count(
@@ -418,20 +424,20 @@ class _MainAppState extends State<MainApp> {
             child: const Text('.'),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Text('ANS'),
+            child: Text('ANS'),
           ),
         ),
-        StaggeredGridTile.count(
+        const StaggeredGridTile.count(
           crossAxisCellCount: 2,
           mainAxisCellCount: 1,
           child: FilledButton(
             onPressed: null,
-            child: const Text('='),
+            child: Text('='),
           ),
         ),
       ],
