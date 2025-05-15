@@ -21,7 +21,7 @@ A new Flutter project.
 
 
 ```bash
-git clone https://github.com/Manuel-Alonso-AG/SingUp-Frontend.git
+git clone https://github.com/Manuel-Alonso-AG/Calculadora-funcional.git
 ```
 
 2. Instala las dependencias:

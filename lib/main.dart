@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:popover/popover.dart';
+
 
 void main() {
   runApp(const MainApp());
@@ -14,6 +16,7 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   String label = '';
+  String result = '';
 
   updateLabel(String caracter) {
     setState(() {
@@ -32,6 +35,9 @@ class _MainAppState extends State<MainApp> {
       label = label.substring(0, label.length - 1);
     });
   }
+
+
+  TextFormField textField = TextFormField();
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +62,7 @@ class _MainAppState extends State<MainApp> {
       home: Scaffold(
         body: Center(
           child: Container(
+            width: 420,
             margin: const EdgeInsets.all(20),
             child: Column(
               children: [
@@ -64,14 +71,50 @@ class _MainAppState extends State<MainApp> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  height: 100,
+                  height: 150,
                   width: double.infinity,
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.all(20),
-                  child: Text(label),
+                  child: Column(
+                    children: [
+                      textField,
+                      Text(result)
+                    ],
+                  ),
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  child: Text(
+                    'Trigonometry',
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.blue[700],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onTap: () => showPopover(
+                    context: context,
+                    bodyBuilder: (context) => Container(
+                      width: 300,
+                      height: 400,
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          const Text('Trigonometry'),
+                          Expanded(
+                            child: Text('A'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onPop: () => print('Popover was popped!'),
+                    direction: PopoverDirection.bottom,
+                    width: 350,
+                    height: 400,
+                  ),
+                ),
+                const SizedBox(height: 20),
                 aCalculator(),
                 const SizedBox(height: 20),
                 normalCalculator()
@@ -157,6 +200,17 @@ class _MainAppState extends State<MainApp> {
           mainAxisCellCount: 1,
           child: Container(),
         ),
+      ],
+    );
+  }
+
+  
+  StaggeredGrid trigonometryCalculator() {
+    return StaggeredGrid.count(
+      crossAxisCount: 5,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
+      children: [
         StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
@@ -276,10 +330,12 @@ class _MainAppState extends State<MainApp> {
             onPressed: () => updateLabel('cot('),
             child: const Text('cot'),
           ),
-        ),
+        )
       ],
     );
   }
+
+
 
   StaggeredGrid normalCalculator() {
     return StaggeredGrid.count(
