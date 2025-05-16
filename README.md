@@ -11,10 +11,9 @@ A new Flutter project.
     * suma, resta, division, multiplicacion, potencia, raiz
 - Calculo de operaciones trigonometricas
     * seno, coseno, tangente, secante, cosecante, tangente
-- Calculo de numeros irracioneales con euler y pi
 
 > [!NOTE]
-> Se podrian realizar cambios en las caracteristicas del proyecto, en este momento solo se mensiona lo que se planea hacer.
+> Se podrian realizar cambios en las caracteristicas del proyecto, en este momento solo se mensiona lo que se planea realizar con el.
 
 ## Instalación  
 1. Clona este repositorio:  

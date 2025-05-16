@@ -1,163 +1,225 @@
+import 'package:calculadora/logic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:popover/popover.dart';
-
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> {
-  String label = '';
-  String result = '';
-
-  updateLabel(String caracter) {
-    setState(() {
-      label += caracter;
-    });
-  }
-
-  clearLabel() {
-    setState(() {
-      label = '';
-    });
-  }
-
-  removeLast() {
-    setState(() {
-      label = label.substring(0, label.length - 1);
-    });
-  }
-
-
-  TextFormField textField = TextFormField();
-
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.blue,
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: Colors.grey[200],
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.w500,
-          ),
-          labelLarge: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.w500,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<OperationsProvider>(
+          create: (_) => OperationsProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorSchemeSeed: Colors.blue,
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: Colors.white,
+          textTheme: const TextTheme(
+            bodyMedium: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w500,
+            ),
+            labelLarge: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
-      ),
-      home: Scaffold(
-        body: Center(
-          child: Container(
-            width: 420,
-            margin: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 150,
-                  width: double.infinity,
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      textField,
-                      Text(result)
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-                GestureDetector(
-                  child: Text(
-                    'Trigonometry',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.blue[700],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  onTap: () => showPopover(
-                    context: context,
-                    bodyBuilder: (context) => Container(
-                      width: 300,
-                      height: 400,
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-                          const Text('Trigonometry'),
-                          Expanded(
-                            child: Text('A'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onPop: () => print('Popover was popped!'),
-                    direction: PopoverDirection.bottom,
-                    width: 350,
-                    height: 400,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                aCalculator(),
-                const SizedBox(height: 20),
-                normalCalculator()
-              
-              ],
+        home: Scaffold(
+          body: Center(
+            child: Container(
+              width: 450,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: const EdgeInsets.all(20),
+              child: const CalculatorUX(),
             ),
-          )
+          ),
         ),
       ),
     );
   }
+}
 
-  
-  StaggeredGrid aCalculator() {
+
+@immutable
+class PopoverButton extends StatelessWidget {
+  final String label;
+  final Widget popoverContent;
+
+  const PopoverButton({
+    super.key,
+    required this.label,
+    required this.popoverContent,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => showPopover(
+        context: context,
+        direction: PopoverDirection.top,
+        bodyBuilder: (context) => Padding(
+          padding: const EdgeInsets.all(10),
+          child: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+                popoverContent,
+              ],
+            ),
+          ),
+        ),
+      ),
+      child: Text(label),
+    );
+  }
+}
+
+class TrigonometryCalculatorGrid extends StatelessWidget {
+  const TrigonometryCalculatorGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return StaggeredGrid.count(
       crossAxisCount: 5,
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
       children: [
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Text('sh'),
+        _trigButton(context, '^'),
+        _actionButton('1/x', (context) => context.read<OperationsProvider>().oneOnX()),
+        _trigButton(context, '√('),
+        _trigButton(context, 'log('),
+        _trigButton(context, 'ln('),
+        _actionButton('+/-', (context) => context.read<OperationsProvider>().changeSing()),
+        _disabledButton('hyp'),
+        _trigButton(context, 'sin('),
+        _trigButton(context, 'cos('),
+        _trigButton(context, 'tan('),
+        _trigButton(context, '('),
+        _trigButton(context, ')'),
+        _trigButton(context, 'sec('),
+        _trigButton(context, 'csc('),
+        _trigButton(context, 'cot('),
+      ],
+    );
+  }
+
+  static StaggeredGridTile _actionButton(String label, void Function(BuildContext) onPressed) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: Builder(
+        builder: (context) => FilledButton(
+          onPressed: () => onPressed(context),
+          child: Text(label),
+        ),
+      ),
+    );
+  }
+
+  static StaggeredGridTile _trigButton(BuildContext context, String label) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: FilledButton(
+        onPressed: () => context.read<OperationsProvider>().addElement(label),
+        child: Text(label.replaceAll('(', '')),
+      ),
+    );
+  }
+
+  static StaggeredGridTile _disabledButton(String label) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: FilledButton(
+        onPressed: null,
+        child: Text(label),
+      ),
+    );
+  }
+}
+
+class CalculatorUX extends StatefulWidget {
+  const CalculatorUX({super.key});
+
+  @override
+  State<CalculatorUX> createState() => _CalculatorUXState();
+}
+
+class _CalculatorUXState extends State<CalculatorUX> {
+  TextFormField textField = TextFormField();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          width: double.infinity,
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              textField,
+              Text(context.watch<OperationsProvider>().operation),
+            ],
           ),
         ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Text('alp'),
+        const SizedBox(height: 20),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          width: double.infinity,
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.all(8),
+          child: const PopoverButton(
+            label: 'Trigonometria',
+            popoverContent: TrigonometryCalculatorGrid(),
           ),
         ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Icon(Icons.keyboard_arrow_up),
-          ),
-        ),
+        const SizedBox(height: 20),
+        aCalculator(),
+        const SizedBox(height: 20),
+        normalCalculator(),
+      ],
+    );
+  }
+
+  static StaggeredGrid aCalculator() {
+    return StaggeredGrid.count(
+      crossAxisCount: 5,
+      mainAxisSpacing: 4,
+      crossAxisSpacing: 4,
+      children: [
+        _disabledButton('sh'),
+        _disabledButton('alp'),
+        _disabledButtonIcon(Icons.keyboard_arrow_up),
         const StaggeredGridTile.count(
           crossAxisCellCount: 2,
           mainAxisCellCount: 1,
@@ -171,30 +233,9 @@ class _MainAppState extends State<MainApp> {
           mainAxisCellCount: 1,
           child: Container(),
         ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Icon(Icons.keyboard_arrow_left),
-          ),
-        ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Icon(Icons.keyboard_arrow_down),
-          ),
-        ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Icon(Icons.keyboard_arrow_right),
-          ),
-        ),
+        _disabledButtonIcon(Icons.keyboard_arrow_left),
+        _disabledButtonIcon(Icons.keyboard_arrow_down),
+        _disabledButtonIcon(Icons.keyboard_arrow_right),
         StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
@@ -204,290 +245,52 @@ class _MainAppState extends State<MainApp> {
     );
   }
 
-  
-  StaggeredGrid trigonometryCalculator() {
-    return StaggeredGrid.count(
-      crossAxisCount: 5,
-      mainAxisSpacing: 4,
-      crossAxisSpacing: 4,
-      children: [
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('^'),
-            child: const Text('^'),
-          ),
-        ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Text('1/x'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('√('),
-            child: const Text('√'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('log('),
-            child: const Text('log'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('ln('),
-            child: const Text('ln'),
-          ),
-        ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Text('+/-'),
-          ),
-        ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Text('hyp'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('sin('),
-            child: const Text('sin'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('cos('),
-            child: const Text('cos'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('tan('),
-            child: const Text('tan'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('('),
-            child: const Text('('),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel(')'),
-            child: const Text(')'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('sec('),
-            child: const Text('sec'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('csc('),
-            child: const Text('csc'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('cot('),
-            child: const Text('cot'),
-          ),
-        )
-      ],
+  static StaggeredGridTile _disabledButton(String label) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: FilledButton(
+        onPressed: null,
+        child: Text(label),
+      ),
     );
   }
 
+  static StaggeredGridTile _disabledButtonIcon(IconData icon) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: FilledButton(
+        onPressed: null,
+        child: Icon(icon),
+      ),
+    );
+  }
 
-
-  StaggeredGrid normalCalculator() {
+  static StaggeredGrid normalCalculator() {
     return StaggeredGrid.count(
       crossAxisCount: 5,
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
-
       children: [
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('7'),
-            child: const Text('7'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('8'),
-            child: const Text('8'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('9'),
-            child: const Text('9'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => clearLabel(),
-            child: const Text('CE'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => removeLast(),
-            child: const Icon(Icons.backspace),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('4'),
-            child: const Text('4'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('5'),
-            child: const Text('5'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('6'),
-            child: const Text('6'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('*'),
-            child: const Text('*'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('/'),
-            child: const Text('/'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('1'),
-            child: const Text('1'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('2'),
-            child: const Text('2'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('3'),
-            child: const Text('3'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('+'),
-            child: const Text('+'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('-'),
-            child: const Text('-'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('0'),
-            child: const Text('0'),
-          ),
-        ),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: () => updateLabel('.'),
-            child: const Text('.'),
-          ),
-        ),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Text('ANS'),
-          ),
-        ),
+        _numberButton('7'),
+        _numberButton('8'),
+        _numberButton('9'),
+        _actionButton('CE', (context) => context.read<OperationsProvider>().clearOperation()),
+        _iconButton(Icons.backspace, (context) => context.read<OperationsProvider>().removeElement()),
+        _numberButton('4'),
+        _numberButton('5'),
+        _numberButton('6'),
+        _operatorButton('*'),
+        _operatorButton('/'),
+        _numberButton('1'),
+        _numberButton('2'),
+        _numberButton('3'),
+        _operatorButton('+'),
+        _operatorButton('-'),
+        _numberButton('0'),
+        _operatorButton('.'),
+        _disabledButton('ANS'),
         const StaggeredGridTile.count(
           crossAxisCellCount: 2,
           mainAxisCellCount: 1,
@@ -497,6 +300,58 @@ class _MainAppState extends State<MainApp> {
           ),
         ),
       ],
+    );
+  }
+
+  static StaggeredGridTile _numberButton(String number) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: Builder(
+        builder: (context) => FilledButton(
+          onPressed: () => context.read<OperationsProvider>().addElement(number),
+          child: Text(number),
+        ),
+      ),
+    );
+  }
+
+  static StaggeredGridTile _operatorButton(String op) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: Builder(
+        builder: (context) => FilledButton(
+          onPressed: () => context.read<OperationsProvider>().addElement(op),
+          child: Text(op),
+        ),
+      ),
+    );
+  }
+
+  static StaggeredGridTile _actionButton(String label, void Function(BuildContext) onPressed) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: Builder(
+        builder: (context) => FilledButton(
+          onPressed: () => onPressed(context),
+          child: Text(label),
+        ),
+      ),
+    );
+  }
+
+  static StaggeredGridTile _iconButton(IconData icon, void Function(BuildContext) onPressed) {
+    return StaggeredGridTile.count(
+      crossAxisCellCount: 1,
+      mainAxisCellCount: 1,
+      child: Builder(
+        builder: (context) => FilledButton(
+          onPressed: () => onPressed(context),
+          child: Icon(icon),
+        ),
+      ),
     );
   }
 }
