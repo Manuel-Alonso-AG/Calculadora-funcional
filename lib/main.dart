@@ -1,5 +1,6 @@
 import 'package:calculadora/logic.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:popover/popover.dart';
 import 'package:provider/provider.dart';
@@ -103,18 +104,24 @@ class TrigonometryCalculatorGrid extends StatelessWidget {
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
       children: [
+        const StaggeredGridTile.count(
+          crossAxisCellCount: 2,
+          mainAxisCellCount: 1,
+          child: FilledButton(
+            onPressed: null,
+            child: Text('DEG/RAD'),
+          ),
+        ),
+        _disabledButton('hyp'),
         _trigButton(context, '^'),
-        _actionButton('1/x', (context) => context.read<OperationsProvider>().oneOnX()),
         _trigButton(context, '√('),
+        _actionButton('1/x', (context) => context.read<OperationsProvider>().oneOnX()),
+        _actionButton('+/-', (context) => context.read<OperationsProvider>().changeSing()),
         _trigButton(context, 'log('),
         _trigButton(context, 'ln('),
-        _actionButton('+/-', (context) => context.read<OperationsProvider>().changeSing()),
-        _disabledButton('hyp'),
         _trigButton(context, 'sin('),
         _trigButton(context, 'cos('),
         _trigButton(context, 'tan('),
-        _trigButton(context, '('),
-        _trigButton(context, ')'),
         _trigButton(context, 'sec('),
         _trigButton(context, 'csc('),
         _trigButton(context, 'cot('),
@@ -166,7 +173,6 @@ class CalculatorUX extends StatefulWidget {
 }
 
 class _CalculatorUXState extends State<CalculatorUX> {
-  TextFormField textField = TextFormField();
 
   @override
   Widget build(BuildContext context) {
@@ -184,8 +190,25 @@ class _CalculatorUXState extends State<CalculatorUX> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              textField,
-              Text(context.watch<OperationsProvider>().operation),
+              const Text('Operación', style: TextStyle(fontSize: 20)),
+              const SizedBox(height: 10),
+              TextField(
+                controller: context.watch<OperationsProvider>().controller,
+                cursorColor: Colors.black,
+                autofocus: true,
+                showCursor: true,
+                // Como hago que se vea el cursor siempre?
+                readOnly: false,
+                inputFormatters: [
+                  FilteringTextInputFormatter.deny(RegExp('.*')),
+                ],
+                textAlign: TextAlign.right,
+                style: const TextStyle(fontSize: 30),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '0',
+                ),
+              ),
             ],
           ),
         ),
@@ -199,19 +222,19 @@ class _CalculatorUXState extends State<CalculatorUX> {
           alignment: Alignment.centerLeft,
           padding: const EdgeInsets.all(8),
           child: const PopoverButton(
-            label: 'Trigonometria',
+            label: 'Avanzado',
             popoverContent: TrigonometryCalculatorGrid(),
           ),
         ),
         const SizedBox(height: 20),
-        aCalculator(),
+        controlsCalculator(),
         const SizedBox(height: 20),
         normalCalculator(),
       ],
     );
   }
 
-  static StaggeredGrid aCalculator() {
+  static StaggeredGrid controlsCalculator() {
     return StaggeredGrid.count(
       crossAxisCount: 5,
       mainAxisSpacing: 4,
@@ -219,28 +242,22 @@ class _CalculatorUXState extends State<CalculatorUX> {
       children: [
         _disabledButton('sh'),
         _disabledButton('alp'),
+        StaggeredGridTile.count(
+          crossAxisCellCount: 1,
+          mainAxisCellCount: 1,
+          child: Container(),
+        ),
         _disabledButtonIcon(Icons.keyboard_arrow_up),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 2,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Text('DEG/RAD'),
-          ),
-        ),
         StaggeredGridTile.count(
           crossAxisCellCount: 1,
           mainAxisCellCount: 1,
           child: Container(),
         ),
-        _disabledButtonIcon(Icons.keyboard_arrow_left),
+        _actionButton('(', (context) => context.read<OperationsProvider>().parenthesis()),
+        _actionButton(')', (context) => context.read<OperationsProvider>().addElement(')')),
+        _actionButton('<-', (context) => context.read<OperationsProvider>().moveCursorLeft()),
         _disabledButtonIcon(Icons.keyboard_arrow_down),
-        _disabledButtonIcon(Icons.keyboard_arrow_right),
-        StaggeredGridTile.count(
-          crossAxisCellCount: 1,
-          mainAxisCellCount: 1,
-          child: Container(),
-        ),
+        _actionButton('->', (context) => context.read<OperationsProvider>().moveCursorRight()),
       ],
     );
   }
