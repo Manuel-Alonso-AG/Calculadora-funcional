@@ -8,16 +8,16 @@ A new Flutter project.
 ## Características
 
 - ❎ Calculo de operaciones basicas
-    * suma, resta, division, multiplicacion, potencia, raiz
+  - suma, resta, division, multiplicacion, potencia, raiz
 - ❎ Calculo de operaciones trigonometricas
-    * seno, coseno, tangente, secante, cosecante, tangente
+  - seno, coseno, tangente, secante, cosecante, tangente
 
 > [!NOTE]
 > Se podrian realizar cambios en las caracteristicas del proyecto, en este momento solo se mensiona lo que se planea realizar con el.
 
-## Instalación  
-1. Clona este repositorio:  
+## Instalación
 
+1. Clona este repositorio:
 
 ```bash
 git clone https://github.com/Manuel-Alonso-AG/Calculadora-funcional.git
@@ -33,7 +33,6 @@ git clone https://github.com/Manuel-Alonso-AG/Calculadora-funcional.git
 flutter pub get
 ```
 
-
 3. Ejecuta la app:
 
 ```bash
@@ -44,10 +43,10 @@ flutter run
 
 ![Img](assets/img.png)
 
-
 ## Progreso
 
 Se realizó la interfaz de la calculadora, con el uso de mostrar la operación ingresada por el usuario de la mayoría de las funciones de una calculadora científica.
+
 - Mostrar números
 - Mostrar operaciones básicas
 - Mostrar funciones trigonométricas
@@ -59,7 +58,8 @@ Hay problemas en la forma en la que se construyó la interfaz; la legibilidad no
 
 El cursor del campo de texto que muestra la operación matemática no se muestra.
 
- * lib/main.dart (line 192)
+- lib/main.dart (line 192)
+
 ```dart
     Column(
         children: [

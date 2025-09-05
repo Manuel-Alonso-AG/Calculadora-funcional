@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class OperationsProvider extends ChangeNotifier {
   TextEditingController controller = TextEditingController();
   String get operation => controller.text;
-  
+
   void moveCursorLeft() {
     final selection = controller.selection;
     int pos = selection.isValid ? selection.baseOffset : controller.text.length;
@@ -38,7 +38,6 @@ class OperationsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void removeElement() {
     if (controller.text.isEmpty) {
       return;
@@ -71,7 +70,7 @@ class OperationsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void oneOnX(){
+  void oneOnX() {
     if (controller.text.isNotEmpty) {
       controller.text = "1/($operation)";
     }
@@ -79,7 +78,12 @@ class OperationsProvider extends ChangeNotifier {
   }
 
   void changeSing() {
-    notifyListeners();
+    String text = controller.text;
+    if (text.isNotEmpty) {
+      if (text.startsWith('-')) {
+        controller.text = text.substring(1);
+      }
+    }
   }
 
   void clearOperation() {
