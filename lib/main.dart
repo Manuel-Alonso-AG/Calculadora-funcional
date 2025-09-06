@@ -1,4 +1,4 @@
-import 'package:calculadora/logic.dart';
+import 'package:calculadora/logic_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -56,7 +56,6 @@ class MainApp extends StatelessWidget {
   }
 }
 
-
 @immutable
 class PopoverButton extends StatelessWidget {
   final String label;
@@ -81,7 +80,8 @@ class PopoverButton extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(label,
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(height: 10),
                 popoverContent,
               ],
@@ -115,8 +115,10 @@ class TrigonometryCalculatorGrid extends StatelessWidget {
         _disabledButton('hyp'),
         _trigButton(context, '^'),
         _trigButton(context, '√('),
-        _actionButton('1/x', (context) => context.read<OperationsProvider>().oneOnX()),
-        _actionButton('+/-', (context) => context.read<OperationsProvider>().changeSing()),
+        _actionButton(
+            '1/x', (context) => context.read<OperationsProvider>().oneOnX()),
+        _actionButton('+/-',
+            (context) => context.read<OperationsProvider>().changeSing()),
         _trigButton(context, 'log('),
         _trigButton(context, 'ln('),
         _trigButton(context, 'sin('),
@@ -129,7 +131,8 @@ class TrigonometryCalculatorGrid extends StatelessWidget {
     );
   }
 
-  static StaggeredGridTile _actionButton(String label, void Function(BuildContext) onPressed) {
+  static StaggeredGridTile _actionButton(
+      String label, void Function(BuildContext) onPressed) {
     return StaggeredGridTile.count(
       crossAxisCellCount: 1,
       mainAxisCellCount: 1,
@@ -147,7 +150,8 @@ class TrigonometryCalculatorGrid extends StatelessWidget {
       crossAxisCellCount: 1,
       mainAxisCellCount: 1,
       child: FilledButton(
-        onPressed: () => context.read<OperationsProvider>().addElement(label),
+        onPressed: null,
+        //onPressed: () => context.read<OperationsProvider>().addElement(label),
         child: Text(label.replaceAll('(', '')),
       ),
     );
@@ -173,7 +177,6 @@ class CalculatorUX extends StatefulWidget {
 }
 
 class _CalculatorUXState extends State<CalculatorUX> {
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -253,11 +256,15 @@ class _CalculatorUXState extends State<CalculatorUX> {
           mainAxisCellCount: 1,
           child: Container(),
         ),
-        _actionButton('(', (context) => context.read<OperationsProvider>().parenthesis()),
-        _actionButton(')', (context) => context.read<OperationsProvider>().addElement(')')),
-        _actionButton('<-', (context) => context.read<OperationsProvider>().moveCursorLeft()),
+        _actionButton(
+            '(', (context) => context.read<OperationsProvider>().parenthesis()),
+        _actionButton(')',
+            (context) => context.read<OperationsProvider>().addElement(')')),
+        _actionButton('<-',
+            (context) => context.read<OperationsProvider>().moveCursorLeft()),
         _disabledButtonIcon(Icons.keyboard_arrow_down),
-        _actionButton('->', (context) => context.read<OperationsProvider>().moveCursorRight()),
+        _actionButton('->',
+            (context) => context.read<OperationsProvider>().moveCursorRight()),
       ],
     );
   }
@@ -293,8 +300,10 @@ class _CalculatorUXState extends State<CalculatorUX> {
         _numberButton('7'),
         _numberButton('8'),
         _numberButton('9'),
-        _actionButton('CE', (context) => context.read<OperationsProvider>().clearOperation()),
-        _iconButton(Icons.backspace, (context) => context.read<OperationsProvider>().removeElement()),
+        _actionButton('CE',
+            (context) => context.read<OperationsProvider>().clearOperation()),
+        _iconButton(Icons.backspace,
+            (context) => context.read<OperationsProvider>().removeElement()),
         _numberButton('4'),
         _numberButton('5'),
         _numberButton('6'),
@@ -308,14 +317,9 @@ class _CalculatorUXState extends State<CalculatorUX> {
         _numberButton('0'),
         _operatorButton('.'),
         _disabledButton('ANS'),
-        const StaggeredGridTile.count(
-          crossAxisCellCount: 2,
-          mainAxisCellCount: 1,
-          child: FilledButton(
-            onPressed: null,
-            child: Text('='),
-          ),
-        ),
+        _actionButton("=", (context) {
+          context.read<OperationsProvider>().evaluateOperation();
+        })
       ],
     );
   }
@@ -326,7 +330,8 @@ class _CalculatorUXState extends State<CalculatorUX> {
       mainAxisCellCount: 1,
       child: Builder(
         builder: (context) => FilledButton(
-          onPressed: () => context.read<OperationsProvider>().addElement(number),
+          onPressed: () =>
+              context.read<OperationsProvider>().addElement(number),
           child: Text(number),
         ),
       ),
@@ -346,7 +351,8 @@ class _CalculatorUXState extends State<CalculatorUX> {
     );
   }
 
-  static StaggeredGridTile _actionButton(String label, void Function(BuildContext) onPressed) {
+  static StaggeredGridTile _actionButton(
+      String label, void Function(BuildContext) onPressed) {
     return StaggeredGridTile.count(
       crossAxisCellCount: 1,
       mainAxisCellCount: 1,
@@ -359,7 +365,8 @@ class _CalculatorUXState extends State<CalculatorUX> {
     );
   }
 
-  static StaggeredGridTile _iconButton(IconData icon, void Function(BuildContext) onPressed) {
+  static StaggeredGridTile _iconButton(
+      IconData icon, void Function(BuildContext) onPressed) {
     return StaggeredGridTile.count(
       crossAxisCellCount: 1,
       mainAxisCellCount: 1,

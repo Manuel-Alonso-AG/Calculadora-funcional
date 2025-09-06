@@ -1,19 +1,17 @@
 # Calculadora
 
-A new Flutter project.
-
 > [!IMPORTANT]
-> Este proyecto esta en desarrollo y no hay un funcionamiento de la aplicacion en este momento.
+> Este proyecto está en desarrollo y tiene problemas en la funcionalidad de algunas operaciones.
 
 ## Características
 
-- ❎ Calculo de operaciones basicas
-  - suma, resta, division, multiplicacion, potencia, raiz
-- ❎ Calculo de operaciones trigonometricas
+- ✅ Calculo de operaciones básicas
+  - suma, resta, división, multiplicación, potencia
+- ❌ Calculo de operaciones trigonométricas
   - seno, coseno, tangente, secante, cosecante, tangente
 
 > [!NOTE]
-> Se podrian realizar cambios en las caracteristicas del proyecto, en este momento solo se mensiona lo que se planea realizar con el.
+> Se podrían realizar cambios en las características del proyecto, en este momento solo se menciona lo que se planea realizar con él.
 
 ## Instalación
 
@@ -45,12 +43,11 @@ flutter run
 
 ## Progreso
 
-Se realizó la interfaz de la calculadora, con el uso de mostrar la operación ingresada por el usuario de la mayoría de las funciones de una calculadora científica.
+Se realizo el apartado lógico donde se realiza la operacion ingresada, se utilizó un árbol que separa los operadores de los operandos y se recorre realizando las operaciones.
 
-- Mostrar números
-- Mostrar operaciones básicas
-- Mostrar funciones trigonométricas
-- Desplazar el cursor del campo de texto
+- Uso de un árbol binario
+- Convertir la expresión en posfija
+- Uso de la jerarquía de las operaciones
 
 ## Problemas del desarrollo
 
@@ -86,8 +83,8 @@ El cursor del campo de texto que muestra la operación matemática no se muestra
     ),
 ```
 
-## Futura implementacion
+Otro problema que hay en el funcionamiento es que no puede realizar procedimientos que inicien con un operador de resta.
 
-Uso de las opciones SIFT y ALPHA de una calculadora científica. Además del uso de funciones hiperbólicas.
+## Futura implementación
 
-Implementación de la lógica que resuelva y muestre el resultado de la operación ingresada.
+Uso de las opciones SIFT y ALPHA de una calculadora científica. Además del uso de funciones trigonométricas.
