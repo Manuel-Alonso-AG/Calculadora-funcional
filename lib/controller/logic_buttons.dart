@@ -1,5 +1,5 @@
-import 'package:calculadora/backend/bulding_tree.dart';
-import 'package:calculadora/backend/node_class.dart';
+import 'package:calculadora/controller/bulding_tree.dart';
+import 'package:calculadora/model/node_class.dart';
 import 'package:flutter/material.dart';
 
 class OperationsProvider extends ChangeNotifier {
@@ -20,7 +20,8 @@ class OperationsProvider extends ChangeNotifier {
       controller.selection =
           TextSelection.collapsed(offset: controller.text.length);
     } catch (e) {
-      controller.text = "Error";
+      controller.text = e.toString();
+      print(e);
       controller.selection =
           TextSelection.collapsed(offset: controller.text.length);
     }

@@ -83,8 +83,6 @@ El cursor del campo de texto que muestra la operación matemática no se muestra
     ),
 ```
 
-Otro problema que hay en el funcionamiento es que no puede realizar procedimientos que inicien con un operador de resta.
-
 ## Futura implementación
 
 Uso de las opciones SIFT y ALPHA de una calculadora científica. Además del uso de funciones trigonométricas.

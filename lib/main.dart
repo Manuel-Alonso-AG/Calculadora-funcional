@@ -1,4 +1,4 @@
-import 'package:calculadora/logic_buttons.dart';
+import 'package:calculadora/controller/logic_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
