@@ -1,4 +1,6 @@
 import 'package:calculadora/controller/logic_buttons.dart';
+import 'package:calculadora/view/display.dart';
+import 'package:calculadora/view/keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -6,7 +8,41 @@ import 'package:popover/popover.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const App());
+}
+
+class App extends StatelessWidget {
+  const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<OperationsProvider>(
+          create: (_) => OperationsProvider(),
+        ),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          backgroundColor: Color.fromARGB(255, 192, 204, 223),
+          body: Center(
+            child: SizedBox(
+              width: 525,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(child: Display()),
+                  Expanded(flex: 2, child: Keyboard())
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MainApp extends StatelessWidget {

@@ -1,27 +1,30 @@
 import 'package:calculadora/controller/bulding_tree.dart';
-import 'package:calculadora/model/node_class.dart';
+import 'package:calculadora/controller/tree_calculator.dart';
 import 'package:flutter/material.dart';
 
 class OperationsProvider extends ChangeNotifier {
-  TextEditingController controller = TextEditingController();
+  final TextEditingController controller = TextEditingController();
+  String currentOperationText = "";
   String get operation => controller.text;
 
   void evaluateOperation() {
-    if (controller.text.isEmpty) {
+    final String expression = controller.text;
+
+    if (expression.isEmpty) {
       return;
     }
 
-    try {
-      BuldingTree buldingtree = BuldingTree();
-      Node? root = buldingtree.generateTree(controller.text);
+    final calculator = TreeCalculator();
 
-      double result = buldingtree.evaluateTree(root);
+    try {
+      double result = calculator.evaluate(expression);
+
+      currentOperationText = expression;
       controller.text = result.toString();
       controller.selection =
           TextSelection.collapsed(offset: controller.text.length);
     } catch (e) {
-      controller.text = e.toString();
-      print(e);
+      currentOperationText = e.toString();
       controller.selection =
           TextSelection.collapsed(offset: controller.text.length);
     }
@@ -115,7 +118,11 @@ class OperationsProvider extends ChangeNotifier {
             chars[i] = '-';
             break;
           case '-':
-            chars[i] = '+';
+            if (i > 0 && (isNumber(chars[i - 1]) || chars[i - 1] == ')')) {
+              chars[i] = '+';
+            } else {
+              chars[i] = '';
+            }
             break;
           case '*':
           case '/':
@@ -126,6 +133,18 @@ class OperationsProvider extends ChangeNotifier {
             }
             break;
           default:
+            if (isNumber(element) || element == '(') {
+              if (i > 0 && chars[i - 1] == '-') {
+                chars[i - 1] = '+';
+              } else if (i > 0 && chars[i - 1] == '+') {
+                chars[i - 1] = '-';
+              } else if (i == 0) {
+                chars.insert(0, '-');
+              } else {
+                chars.insert(i, '-');
+              }
+            }
+            break;
         }
       }
 

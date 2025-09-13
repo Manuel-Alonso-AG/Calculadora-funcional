@@ -1,5 +1,4 @@
 import 'dart:math';
-/*filadeputa*/
 import 'package:calculadora/model/node_class.dart';
 
 bool isNumber(String c) {
@@ -29,6 +28,9 @@ List<String> infixToPostfix(String expression) {
   List<String> tokens = tokenize(expression);
 
   for (String token in tokens) {
+    if (token.isEmpty) {
+      continue;
+    }
     if (isNumber(token)) {
       output.add(token);
     } else if (token == "(") {
@@ -53,15 +55,20 @@ List<String> infixToPostfix(String expression) {
   return output;
 }
 
-/* 2-(4/6)*(4/-5)-(8^3) */
 List<String> tokenize(String expression) {
-  List<String> tokens = [];
+  if (expression.trim().isEmpty) {
+    throw Exception("Exprecion vacia");
+  }
+
+  final List<String> tokens = <String>[];
   String buffer = '';
 
   for (int i = 0; i < expression.length; i++) {
     String c = expression[i];
 
     if (isOperation(c)) {
+      bool canAddUp = isNumber(expression[i - 1]) || expression[i - 1] == ')';
+
       if (buffer.isNotEmpty) {
         tokens.add(buffer);
         buffer = '';
@@ -69,15 +76,14 @@ List<String> tokenize(String expression) {
         if (c == '-') {
           buffer = '-';
 
-          if ((isNumber(expression[i - 1]) || expression[i - 1] == ')')) {
+          if (canAddUp) {
             c = '+';
           }
         }
       } else if (c == '-') {
         buffer = '-';
 
-        if (i > 0 &&
-            (isNumber(expression[i - 1]) || expression[i - 1] == ')')) {
+        if (i > 0 && canAddUp) {
           tokens.add('+');
           buffer = '-';
         } else {
@@ -95,10 +101,6 @@ List<String> tokenize(String expression) {
 
   if (buffer.isNotEmpty) {
     tokens.add(buffer);
-  }
-
-  for (String t in tokens) {
-    print(t);
   }
 
   return tokens;
