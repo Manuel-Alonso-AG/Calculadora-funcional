@@ -1,3 +1,4 @@
+import 'package:calculadora/view/constants/constatns_sizes.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -18,9 +19,9 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       onTap: action,
       child: Padding(
-          padding: const EdgeInsets.all(6.0),
+          padding: ConstatsSizes.spaceBetween,
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: ConstatsSizes.borderRadius,
             child: Container(
                 color: color,
                 child: Center(

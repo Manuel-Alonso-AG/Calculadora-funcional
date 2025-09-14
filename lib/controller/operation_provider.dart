@@ -1,11 +1,15 @@
-import 'package:calculadora/controller/bulding_tree.dart';
 import 'package:calculadora/controller/tree_calculator.dart';
+import 'package:calculadora/utils/math_token_helper.dart';
 import 'package:flutter/material.dart';
 
 class OperationsProvider extends ChangeNotifier {
   final TextEditingController controller = TextEditingController();
   String currentOperationText = "";
   String get operation => controller.text;
+
+  bool isNumber(String char) {
+    return RegExp(r'^[0-9]$').hasMatch(char);
+  }
 
   void evaluateOperation() {
     final String expression = controller.text;
@@ -27,24 +31,6 @@ class OperationsProvider extends ChangeNotifier {
       currentOperationText = e.toString();
       controller.selection =
           TextSelection.collapsed(offset: controller.text.length);
-    }
-    notifyListeners();
-  }
-
-  void moveCursorLeft() {
-    final selection = controller.selection;
-    int pos = selection.isValid ? selection.baseOffset : controller.text.length;
-    if (pos > 0) {
-      controller.selection = TextSelection.collapsed(offset: pos - 1);
-    }
-    notifyListeners();
-  }
-
-  void moveCursorRight() {
-    final selection = controller.selection;
-    int pos = selection.isValid ? selection.baseOffset : controller.text.length;
-    if (pos < controller.text.length) {
-      controller.selection = TextSelection.collapsed(offset: pos + 1);
     }
     notifyListeners();
   }
@@ -104,58 +90,65 @@ class OperationsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+/*TODO: Arreglar esta cosa */
   void changeSing() {
     String text = controller.text;
 
-    if (text.isNotEmpty) {
-      List<String> chars = text.split('');
-
-      for (var i = 0; i < chars.length; i++) {
-        String element = chars[i];
-
-        switch (element) {
-          case '+':
-            chars[i] = '-';
-            break;
-          case '-':
-            if (i > 0 && (isNumber(chars[i - 1]) || chars[i - 1] == ')')) {
-              chars[i] = '+';
-            } else {
-              chars[i] = '';
-            }
-            break;
-          case '*':
-          case '/':
-            if (chars.length - i > 1) {
-              if (chars[i + 1] == '-') {
-                chars[i + 1] = '';
-              }
-            }
-            break;
-          default:
-            if (isNumber(element) || element == '(') {
-              if (i > 0 && chars[i - 1] == '-') {
-                chars[i - 1] = '+';
-              } else if (i > 0 && chars[i - 1] == '+') {
-                chars[i - 1] = '-';
-              } else if (i == 0) {
-                chars.insert(0, '-');
-              } else {
-                chars.insert(i, '-');
-              }
-            }
-            break;
-        }
-      }
-
-      if (text.startsWith('-')) {
-        chars.removeAt(0);
-      } else {
-        chars.insert(0, '-');
-      }
-
-      controller.text = chars.join('');
+    if (text.isEmpty) {
+      return;
     }
+
+    List<String> chars = text.split('');
+
+    for (var i = 0; i < chars.length; i++) {
+      String element = chars[i];
+
+      if (!MathTokenHelper.isOperation(element)) {
+        continue;
+      }
+
+      switch (element) {
+        case '+':
+          chars[i] = '-';
+          break;
+        case '-':
+          if (i > 0 && (isNumber(chars[i - 1]) || chars[i - 1] == ')')) {
+            chars[i] = '+';
+          } else {
+            chars[i] = '';
+          }
+          break;
+        case '*':
+        case '/':
+          if (chars.length - i > 1) {
+            if (chars[i + 1] == '-') {
+              chars[i + 1] = '';
+            }
+          }
+          break;
+        default:
+          if (isNumber(element) || element == '(') {
+            if (i > 0 && chars[i - 1] == '-') {
+              chars[i - 1] = '+';
+            } else if (i > 0 && chars[i - 1] == '+') {
+              chars[i - 1] = '-';
+            } else if (i == 0) {
+              chars.insert(0, '-');
+            } else {
+              chars.insert(i, '-');
+            }
+          }
+          break;
+      }
+    }
+
+    if (text.startsWith('-')) {
+      chars.removeAt(0);
+    } else {
+      chars.insert(0, '-');
+    }
+
+    controller.text = chars.join('');
   }
 
   void clearOperation() {

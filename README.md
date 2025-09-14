@@ -39,7 +39,8 @@ flutter run
 
 ## Capturas de pantalla
 
-![Img](assets/img.png)
+![Img](assets/cal1.png)
+![Img](assets/cal2.png)
 
 ## Progreso
 
@@ -51,38 +52,9 @@ Se realizo el apartado lógico donde se realiza la operacion ingresada, se utili
 
 ## Problemas del desarrollo
 
-Hay problemas en la forma en la que se construyó la interfaz; la legibilidad no es tan clara, pero funcional.
-
 El cursor del campo de texto que muestra la operación matemática no se muestra.
-
-- lib/main.dart (line 192)
-
-```dart
-    Column(
-        children: [
-            const Text('Operación', style: TextStyle(fontSize: 20)),
-            const SizedBox(height: 10),
-            TextField(
-                controller: context.watch<OperationsProvider>().controller,
-                cursorColor: Colors.black,
-                autofocus: true,
-                showCursor: true,
-                // Como hago que se vea el cursor siempre?
-                readOnly: false,
-                inputFormatters: [
-                    FilteringTextInputFormatter.deny(RegExp('.*')),
-                ],
-                textAlign: TextAlign.right,
-                style: const TextStyle(fontSize: 30),
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: '0',
-                ),
-            ),
-        ],
-    ),
-```
 
 ## Futura implementación
 
+Implementacion de constantes matematicas como pi, phi, e
 Uso de las opciones SIFT y ALPHA de una calculadora científica. Además del uso de funciones trigonométricas.

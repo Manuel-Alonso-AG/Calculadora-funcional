@@ -1,4 +1,7 @@
-import 'package:calculadora/controller/logic_buttons.dart';
+import 'package:calculadora/controller/operation_provider.dart';
+import 'package:calculadora/view/constants/constants_colors.dart';
+import 'package:calculadora/view/constants/constatns_sizes.dart';
+import 'package:calculadora/view/widgets/calculator_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,33 +17,24 @@ class _DisplayState extends State<Display> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: ConstatsSizes.borderRadius,
         color: const Color.fromARGB(255, 206, 216, 233),
       ),
       height: double.minPositive,
-      margin: const EdgeInsets.only(top: 28),
-      padding: const EdgeInsets.all(20),
+      margin: ConstatsSizes.separationSpace,
+      padding: ConstatsSizes.separationSpace,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(
-            controller: context.watch<OperationsProvider>().controller,
-            textAlign: TextAlign.left,
-            style: const TextStyle(
-                fontSize: 35, color: Color.fromARGB(255, 93, 113, 149)),
-            decoration: const InputDecoration(
-              border: InputBorder.none,
-              hintText: '0',
-            ),
-          ),
+          const CalculatorTextField(),
           Text(
             context.watch<OperationsProvider>().currentOperationText,
             textAlign: TextAlign.right,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 22,
-                color: Color.fromARGB(255, 93, 113, 149),
+                color: ConstatsColors.onPrimary,
                 fontWeight: FontWeight.bold),
           )
         ],

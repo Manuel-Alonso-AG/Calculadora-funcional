@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:calculadora/model/node_class.dart';
-import 'package:calculadora/utils/expression_tokenizer.dart';
 import 'package:calculadora/utils/math_token_helper.dart';
 import 'package:calculadora/utils/postfix_converter.dart';
 
